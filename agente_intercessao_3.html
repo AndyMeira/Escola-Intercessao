@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agente de Intercessão (Gemini)</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #fdf8ef;
+    --parchment: #f2e8d5;
+    --warm-dark: #1a1208;
+    --brown: #3d2b1f;
+    --gold: #b8860b;
+    --gold-light: #d4a935;
+    --gold-bright: #f0c040;
+    --terracotta: #8b3a2a;
+    --sage: #4a6741;
+    --deep-blue: #1a2744;
+    --ink: #2c1810;
+    --muted: #7a6a5a;
+    --border: rgba(184,134,11,0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(184,134,11,0.08) 0%, transparent 70%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23b8860b' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  header {
+    text-align: center;
+    padding: 40px 0 28px;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  header::before {
+    content: '✦ ✦ ✦';
+    display: block;
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: 8px;
+    margin-bottom: 12px;
+  }
+
+  header h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(20px, 4vw, 34px);
+    font-weight: 400;
+    color: var(--brown);
+    letter-spacing: 1px;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  header h1 span { color: var(--gold); }
+
+  header p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .api-bar {
+    background: var(--parchment);
+    border: 1px solid var(--border);
+    padding: 10px 16px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 13px;
+  }
+
+  .api-bar input {
+    flex: 1;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 12px;
+    background: white;
+  }
+
+  .api-bar button {
+    background: var(--brown);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .masters-section { margin-bottom: 28px; }
+
+  .masters-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .masters-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .master-chip {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12.5px;
+    color: var(--brown);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Lato', sans-serif;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .master-chip.active, .master-chip:hover {
+    background: var(--gold);
+    color: white;
+    border-color: var(--gold);
+    box-shadow: 0 2px 8px rgba(184,134,11,0.3);
+  }
+
+  .tabs {
+    display: flex;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 32px;
+    gap: 0;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.25s;
+  }
+
+  .tab-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeUp 0.4s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  .chat-window {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 520px;
+  }
+
+  .chat-header {
+    background: var(--brown);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .flame { font-size: 16px; animation: flicker 2s infinite alternate; }
+  @keyframes flicker { 0%{opacity:1;transform:scale(1)} 100%{opacity:0.7;transform:scale(0.95)} }
+
+  .chat-header-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--gold-light);
+    font-size: 14px;
+  }
+
+  .active-master-badge {
+    margin-left: auto;
+    background: rgba(212,169,53,0.2);
+    border: 1px solid rgba(212,169,53,0.4);
+    border-radius: 12px;
+    padding: 3px 10px;
+    font-size: 11px;
+    color: var(--gold-light);
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    background: #fdfbf7;
+  }
+
+  .msg { max-width: 88%; animation: msgIn 0.3s ease; }
+  @keyframes msgIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+  .msg.agent { align-self: flex-start; }
+
+  .msg-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 5px;
+    font-family: 'Lato', sans-serif;
+  }
+
+  .msg-bubble {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 2px 12px 12px 12px;
+    padding: 14px 18px;
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--ink);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .msg.user { align-self: flex-end; }
+  .msg.user .msg-bubble {
+    background: var(--brown);
+    color: var(--cream);
+    border-color: var(--brown);
+    border-radius: 12px 12px 2px 12px;
+  }
+
+  .msg.user .msg-label { color: var(--muted); text-align: right; }
+
+  .typing-bubble {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 2px 12px 12px 12px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .typing-bubble span {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: bounce 1.2s infinite;
+  }
+  .typing-bubble span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-bubble span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+  .chat-input-area {
+    padding: 14px 16px;
+    background: white;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  textarea {
+    flex: 1;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--ink);
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    padding: 10px 14px;
+    resize: none;
+    min-height: 42px;
+    max-height: 120px;
+    outline: none;
+    transition: border-color 0.2s;
+    line-height: 1.5;
+  }
+
+  textarea:focus { border-color: var(--gold); }
+  textarea::placeholder { color: var(--muted); }
+
+  .send-btn {
+    background: var(--gold);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 42px; height: 42px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, transform 0.1s;
+    flex-shrink: 0;
+  }
+
+  .send-btn:hover { background: var(--gold-light); }
+  .send-btn:active { transform: scale(0.95); }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .quick-prompts {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .quick-btn {
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--brown);
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 400;
+  }
+
+  .quick-btn:hover {
+    background: var(--parchment);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .quiz-section { display: flex; flex-direction: column; gap: 20px; }
+
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .topic-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .topic-card:hover, .topic-card.selected {
+    border-color: var(--gold);
+    background: #fffbf0;
+    box-shadow: 0 2px 10px rgba(184,134,11,0.15);
+  }
+
+  .topic-card .t-icon { font-size: 20px; margin-bottom: 6px; }
+  .topic-card .t-name {
+    font-size: 13px;
+    color: var(--brown);
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .topic-card .t-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+    font-style: italic;
+  }
+
+  .generate-btn {
+    background: var(--brown);
+    color: var(--gold-bright);
+    border: none;
+    border-radius: 4px;
+    padding: 14px 28px;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 13px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .generate-btn:hover { background: var(--gold); color: white; }
+  .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .quiz-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    animation: fadeUp 0.4s ease;
+  }
+
+  .quiz-ref {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+
+  .quiz-question {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    color: var(--brown);
+    margin-bottom: 22px;
+    line-height: 1.6;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+
+  .option-btn {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 18px;
+    color: var(--ink);
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1.5;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--gold);
+    background: #fffbf0;
+  }
+
+  .option-btn.correct { border-color: var(--sage); background: rgba(74,103,65,0.08); color: var(--sage); font-weight: 700; }
+  .option-btn.wrong { border-color: var(--terracotta); background: rgba(139,58,42,0.08); color: var(--terracotta); }
+
+  .quiz-feedback {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.7;
+    border-left: 4px solid var(--gold);
+    background: #fffbf0;
+    color: var(--brown);
+    animation: fadeUp 0.3s ease;
+  }
+
+  .quiz-feedback .verse {
+    margin-top: 10px;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 13px;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .next-btn {
+    margin-top: 16px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 10px 22px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .next-btn:hover { background: var(--gold); color: white; }
+
+  .loading-text {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    padding: 28px;
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .masters-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .master-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .master-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: var(--brown);
+    margin-bottom: 4px;
+  }
+
+  .master-card .origin {
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .master-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .master-card .books {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--sage);
+    font-style: italic;
+  }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .auth-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+
+  .auth-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 32px 28px;
+    max-width: 360px;
+    width: 100%;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  }
+
+  .auth-box h2 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 20px;
+    color: var(--brown);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .auth-box p.sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12.5px;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .auth-box input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    margin-bottom: 10px;
+    background: var(--cream);
+    color: var(--ink);
+  }
+
+  .auth-box button.primary {
+    width: 100%;
+    background: var(--brown);
+    color: var(--gold-bright);
+    border: none;
+    border-radius: 4px;
+    padding: 12px;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 12.5px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 6px;
+  }
+
+  .auth-box button.primary:hover { background: var(--gold); color: white; }
+  .auth-box button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .auth-toggle {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .auth-toggle a { color: var(--gold); cursor: pointer; font-weight: 700; }
+
+  .auth-error {
+    background: rgba(139,58,42,0.08);
+    border-left: 3px solid var(--terracotta);
+    color: var(--terracotta);
+    font-size: 12.5px;
+    padding: 8px 12px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    display: none;
+  }
+
+  .user-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .user-bar button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--brown);
+    border-radius: 3px;
+    padding: 4px 12px;
+    font-size: 11.5px;
+    cursor: pointer;
+  }
+
+  .user-bar button:hover { border-color: var(--gold); color: var(--gold); }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-box">
+    <h2>Escola de <span style="color:var(--gold)">Intercessão</span></h2>
+    <p class="sub" id="authSubtitle">Entre para continuar seus estudos</p>
+    <div class="auth-error" id="authError"></div>
+    <input type="text" id="authNameField" placeholder="Seu nome" style="display:none;" />
+    <input type="email" id="authEmail" placeholder="E-mail" />
+    <input type="password" id="authPassword" placeholder="Senha" />
+    <button class="primary" id="authSubmitBtn" onclick="submitAuth()">Entrar</button>
+    <div class="auth-toggle" id="authToggleText">
+      Ainda não tem conta? <a onclick="toggleAuthMode()">Cadastre-se</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="user-bar" id="userBar" style="display:none;">
+    <span id="userNameLabel"></span>
+    <button onclick="signOut()">Sair</button>
+  </div>
+
+  <header>
+    <h1>Escola de <span>Intercessão</span></h1>
+    <p>Baseado nos ensinamentos da Bíblia e dos grandes intercessores (Powered by Gemini)</p>
+  </header>
+
+  <div class="masters-section">
+    <div class="masters-label">Tema bíblico:</div>
+    <div class="masters-grid">
+      <button class="master-chip active" onclick="setTheme(this, 'Todos')" data-theme="Todos">📖 Todos os temas</button>
+      <button class="master-chip" onclick="setTheme(this, 'Fundamentos')" data-theme="Fundamentos">📜 Fundamentos da Intercessão</button>
+      <button class="master-chip" onclick="setTheme(this, 'Autoridade')" data-theme="Autoridade">⚔️ Autoridade Espiritual</button>
+      <button class="master-chip" onclick="setTheme(this, 'Quebrantamento')" data-theme="Quebrantamento">🙏 Quebrantamento e Consagração</button>
+      <button class="master-chip" onclick="setTheme(this, 'Jejum')" data-theme="Jejum">🕯️ Jejum e Oração</button>
+      <button class="master-chip" onclick="setTheme(this, 'Nacoes')" data-theme="Nacoes">🌎 Intercessão por Nações</button>
+      <button class="master-chip" onclick="setTheme(this, 'Impartição')" data-theme="Impartição">✨ Impartição e Avivamento</button>
+    </div>
+    <div class="masters-label" style="margin-top:16px;">Ver testemunho de (opcional):</div>
+    <div class="masters-grid">
+      <button class="master-chip active" onclick="setMaster(this, 'Todos')" data-master="Todos">🌍 Nenhum específico</button>
+      <button class="master-chip" onclick="setMaster(this, 'Randy Clark')" data-master="Randy Clark">Randy Clark</button>
+      <button class="master-chip" onclick="setMaster(this, 'Cindy Jacobs')" data-master="Cindy Jacobs">Cindy Jacobs</button>
+      <button class="master-chip" onclick="setMaster(this, 'Neuza Itioka')" data-master="Neuza Itioka">Neuza Itioka</button>
+      <button class="master-chip" onclick="setMaster(this, 'Oswaldo Lôbo Jr')" data-master="Oswaldo Lôbo Jr">Pr. Lôbo Jr</button>
+      <button class="master-chip" onclick="setMaster(this, 'Pastor Coty')" data-master="Pastor Coty">Pr. Coty</button>
+      <button class="master-chip" onclick="setMaster(this, 'Pastora Ezenete')" data-master="Pastora Ezenete">Pra. Ezenete</button>
+      <button class="master-chip" onclick="setMaster(this, 'David Wilkerson')" data-master="David Wilkerson">David Wilkerson</button>
+      <button class="master-chip" onclick="setMaster(this, 'Dave Roberson')" data-master="Dave Roberson">Dave Roberson</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('chat')">💬 Aprender & Perguntar</button>
+    <button class="tab-btn" onclick="switchTab('quiz')">📜 Exercícios & Quiz</button>
+    <button class="tab-btn" onclick="switchTab('masters')">📚 Os Intercessores</button>
+  </div>
+
+  <div id="tab-chat" class="tab-panel active">
+    <div class="chat-window">
+      <div class="chat-header">
+        <span class="flame">🕯️</span>
+        <span class="chat-header-text">Sala de Ensino — Intercessão</span>
+        <span class="active-master-badge" id="activeMasterBadge">📖 Tema: Todos</span>
+      </div>
+      <div class="messages" id="messages">
+        <div class="msg agent">
+          <div class="msg-label">🕯️ Escola de Intercessão (Gemini)</div>
+          <div class="msg-bubble">
+            Bem-vindo(a), servo(a) do Senhor! 🙏<br><br>
+            Esta escola é fundamentada, antes de tudo, na <strong>Palavra de Deus</strong>. Cada resposta parte diretamente das Escrituras, na <strong>versão NAA</strong> (Nova Almeida Atualizada).<br><br>
+            Intercessores como <em>Randy Clark, Cindy Jacobs, Neuza Itioka, Pr. Oswaldo Lôbo Jr., Pr. Coty, Pra. Ezenete Rodrigues, David Wilkerson e Dave Roberson</em> são citados apenas como <strong>testemunhos</strong> de que esses princípios bíblicos, quando vividos, transformam vidas — eles confirmam a Palavra, não a substituem.<br><br>
+            Você pode escolher um tema bíblico acima e, se quiser, ver o testemunho de um intercessor específico sobre esse tema. O que deseja aprender hoje?
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <textarea id="userInput" placeholder="Pergunte sobre intercessão..." rows="1"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+
+    <div class="quick-prompts">
+      <button class="quick-btn" onclick="quickAsk('O que é intercessão e qual é o seu fundamento bíblico?')">O que é intercessão?</button>
+      <button class="quick-btn" onclick="quickAsk('Como Cindy Jacobs ensina sobre a intercessão militante e tomar as portas do inimigo?')">Intercessão militante</button>
+      <button class="quick-btn" onclick="quickAsk('Como Neuza Itioka ensina sobre batalha espiritual e intercessão estratégica?')">Batalha espiritual</button>
+      <button class="quick-btn" onclick="quickAsk('Como Oswaldo Lôbo Jr. ensina o intercessor a usar as armas de guerra espiritual?')">Armas espirituais</button>
+      <button class="quick-btn" onclick="quickAsk('O que Pra. Ezenete Rodrigues ensina sobre o intercessor quebrantado e liberto?')">Intercessor quebrantado</button>
+      <button class="quick-btn" onclick="quickAsk('Como o Pastor Coty ensina sobre a oração de autoridade e conquista de cidades?')">Conquista de cidades</button>
+      <button class="quick-btn" onclick="quickAsk('Como Randy Clark conecta a impartição do Espírito Santo com a intercessão?')">Randy Clark & o Espírito</button>
+      <button class="quick-btn" onclick="quickAsk('Qual a diferença entre oração e intercessão? Como cada um desses mestres explica?')">Oração x Intercessão</button>
+      <button class="quick-btn" onclick="quickAsk('Como praticar a intercessão profética?')">Intercessão profética</button>
+      <button class="quick-btn" onclick="quickAsk('O que a Bíblia ensina sobre jejum ligado à intercessão?')">Jejum & intercessão</button>
+    </div>
+  </div>
+
+  <div id="tab-quiz" class="tab-panel">
+    <div class="quiz-section">
+      <div>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:14px;">Escolha um tema e teste seus conhecimentos:</p>
+        <div class="topic-grid" id="topicGrid">
+          <div class="topic-card selected" data-topic="Fundamentos bíblicos da intercessão" onclick="selectTopic(this)">
+            <div class="t-icon">📜</div>
+            <div class="t-name">Fundamentos Bíblicos</div>
+            <div class="t-sub">Base nas Escrituras</div>
+          </div>
+          <div class="topic-card" data-topic="Intercessão militante segundo Cindy Jacobs — tomar as portas do inimigo" onclick="selectTopic(this)">
+            <div class="t-icon">⚔️</div>
+            <div class="t-name">Intercessão Militante</div>
+            <div class="t-sub">Cindy Jacobs</div>
+          </div>
+          <div class="topic-card" data-topic="Batalha espiritual e intercessão estratégica segundo Neuza Itioka" onclick="selectTopic(this)">
+            <div class="t-icon">🕊️</div>
+            <div class="t-name">Batalha Espiritual</div>
+            <div class="t-sub">Neuza Itioka</div>
+          </div>
+          <div class="topic-card" data-topic="Intercessão em chamas e autoridade espiritual segundo Oswaldo Lôbo Jr" onclick="selectTopic(this)">
+            <div class="t-icon">🔥</div>
+            <div class="t-name">Intercessão em Chamas</div>
+            <div class="t-sub">Pr. Oswaldo Lôbo Jr</div>
+          </div>
+          <div class="topic-card" data-topic="Conquista de cidades e intercessão por nações segundo Pr. Coty — JOCUM" onclick="selectTopic(this)">
+            <div class="t-icon">🌎</div>
+            <div class="t-name">Conquistar Nações</div>
+            <div class="t-sub">Pr. Coty / JOCUM</div>
+          </div>
+          <div class="topic-card" data-topic="O intercessor quebrantado, liberto e a sala do trono segundo Pra. Ezenete Rodrigues" onclick="selectTopic(this)">
+            <div class="t-icon">🙏</div>
+            <div class="t-name">Sala do Trono</div>
+            <div class="t-sub">Pra. Ezenete Rodrigues</div>
+          </div>
+          <div class="topic-card" data-topic="Impartição do Espírito Santo e avivamento ligado à intercessão — Randy Clark" onclick="selectTopic(this)">
+            <div class="t-icon">✨</div>
+            <div class="t-name">Impartição & Avivamento</div>
+            <div class="t-sub">Randy Clark</div>
+          </div>
+          <div class="topic-card" data-topic="Intercessores bíblicos: Moisés, Daniel, Paulo, Ester e seus métodos" onclick="selectTopic(this)">
+            <div class="t-icon">📖</div>
+            <div class="t-name">Intercessores Bíblicos</div>
+            <div class="t-sub">Moisés, Daniel, Paulo, Ester</div>
+          </div>
+        </div>
+        <button class="generate-btn" id="generateBtn" onclick="generateQuiz()">✦ Gerar Pergunta</button>
+      </div>
+      <div id="quizArea"></div>
+    </div>
+  </div>
+
+  <div id="tab-masters" class="tab-panel">
+    <p style="color:var(--muted);font-size:13px;margin-bottom:20px;font-style:italic;">Estes intercessores não são fundamento — a Bíblia é. Eles são testemunhos vivos de que os princípios das Escrituras, quando vividos com fé e obediência, transformam vidas, igrejas e nações:</p>
+    <div class="masters-info">
+      <div class="master-card">
+        <h3>Randy Clark</h3>
+        <div class="origin">🇺🇸 EUA — Global Awakening</div>
+        <p>Fundador do Global Awakening. Conhecido pela impartição de dons do Espírito Santo e pelo papel no Avivamento de Toronto (1994). Conecta profundamente o poder do Espírito com a oração e intercessão.</p>
+        <div class="books">📚 There Is More · The Essential Guide to Healing · Ministry Team Training Manual</div>
+      </div>
+      <div class="master-card">
+        <h3>Cindy Jacobs</h3>
+        <div class="origin">🇺🇸 EUA — Generals International</div>
+        <p>Co-fundadora da Generals International. Profeta e intercessora com missão às nações. Ensina sobre intercessão militante, mapeamento espiritual e como "tomar as portas do inimigo".</p>
+        <div class="books">📚 Possessing the Gates of the Enemy · The Voice of God · Invading the Enemy's Strongholds</div>
+      </div>
+      <div class="master-card">
+        <h3>Dra. Neuza Itioka</h3>
+        <div class="origin">🇧🇷 Brasil — Ministério Ágape Reconciliação</div>
+        <p>Teóloga, missionária e pioneira da Batalha Espiritual no Brasil. Doutora em Missiologia pelo Fuller Seminary. Falecida em 2024, seu legado continua no Instituto Neuza Itioka.</p>
+        <div class="books">📚 Deus quer a Sua Cidade · A Igreja e a Batalha Espiritual · Libertando-se das Prisões Espirituais</div>
+      </div>
+      <div class="master-card">
+        <h3>Pr. Oswaldo Lôbo Jr</h3>
+        <div class="origin">🇧🇷 Brasil — Instituto Exodus · Igreja Batista de Bom Retiro</div>
+        <p>Ex-Tenente Coronel da FAB, teólogo e pastor. Fundador do Instituto Exodus. Ensina a intercessão como arma de guerra espiritual, com profundo embasamento bíblico.</p>
+        <div class="books">📚 Intercessão em Chamas · Autoridade Sobre as Trevas · Discernimento Espiritual · Sangue nos Umbrais</div>
+      </div>
+      <div class="master-card">
+        <h3>Pr. Marcos Coty</h3>
+        <div class="origin">🇧🇷 Brasil — JOCUM · Almirante Tamandaré/PR</div>
+        <p>Missionário da JOCUM, conferencista internacional. Atua há mais de 35 anos com intercessão, conquista de cidades e nações, aconselhamento e formação de intercessores missionários.</p>
+        <div class="books">📚 Pastoreamento Inteligente · Cura e Edificação do Líder · Mensagens em áudio/YouTube</div>
+      </div>
+      <div class="master-card">
+        <h3>Pastora Ezenete Rodrigues</h3>
+        <div class="origin">🇧🇷 Brasil — Igreja Batista da Lagoinha · Diante do Trono</div>
+        <p>Líder de intercessão da Lagoinha e do Ministério Diante do Trono. Fundadora do Ministério Restaurando Vidas. Já ajudou mais de 60 mil pessoas através do Seminário de Intercessão.</p>
+        <div class="books">📚 Intercessão: A Chave da Vitória · Escola de Intercessão (curso online)</div>
+      </div>
+      <div class="master-card">
+        <h3>David Wilkerson</h3>
+        <div class="origin">🇺🇸 EUA — Teen Challenge · Times Square Church</div>
+        <p>Pastor e fundador do Teen Challenge. Seu testemunho de intercessão obediente por jovens em gangues de Nova York, mesmo sem recursos ou reconhecimento, é lembrado como confirmação prática de Ezequiel 22:30 — Deus busca quem se ponha na brecha.</p>
+        <div class="books">📚 A Cruz e o Punhal · Set the Trumpet to Thy Mouth</div>
+      </div>
+      <div class="master-card">
+        <h3>Dave Roberson</h3>
+        <div class="origin">🇺🇸 EUA — Family Prayer Center, Tulsa</div>
+        <p>Pastor com forte atuação em conferências no Brasil, com ministração voltada à vida no Espírito, cura e discernimento profético. Seu testemunho ilustra a busca perseverante pela presença de Deus descrita em Atos 2 e 2 Reis 2.</p>
+        <div class="books">📚 Andando no Poder (seminários) · Mensagens em áudio/vídeo</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const GEMINI_MODEL = "gemini-3.6-flash";
+const PROXY_URL = "https://escola-intercessao-api.vercel.app/api/gemini";
+
+const SUPABASE_URL = "https://xmlspowbfzbptldtferl.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_TCe91nYvgglwoFCeCyDm4Q_a05Lxa0R";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const DAILY_MESSAGE_LIMIT = 75;
+
+let currentUser = null;
+let isSignupMode = false;
+
+let activeMaster = "Todos";
+let activeTheme = "Todos";
+let geminiHistory = [];
+let selectedTopic = "Fundamentos bíblicos da intercessão";
+let quizAnswered = false;
+let currentQuiz = null;
+
+const themeKnowledge = {
+  "Todos": `Cubra o espectro completo dos temas bíblicos de intercessão: fundamentos, autoridade espiritual, quebrantamento, jejum, intercessão por nações, e impartição/avivamento.`,
+  "Fundamentos": `TEMA: Fundamentos bíblicos da intercessão. Base nas Escrituras: Êxodo 17:8-13 (Moisés, Arão e Hur), Ezequiel 22:30 (Deus busca quem se ponha na brecha), 1 Timóteo 2:1-4 (súplicas, orações, intercessões por todos os homens), Gênesis 18:22-33 (Abraão intercedendo por Sodoma).`,
+  "Autoridade": `TEMA: Autoridade espiritual e guerra espiritual. Base nas Escrituras: Efésios 6:10-18 (armadura de Deus), 2 Coríntios 10:3-5 (armas não carnais), Lucas 10:19 (autoridade sobre o poder do inimigo), Mateus 16:19 (as chaves do Reino, ligar e desligar).`,
+  "Quebrantamento": `TEMA: Quebrantamento e consagração do intercessor. Base nas Escrituras: Salmos 51:17 (coração quebrantado e contrito), Isaías 6:1-8 (Isaías diante do trono, "ai de mim"), Romanos 12:1 (sacrifício vivo).`,
+  "Jejum": `TEMA: Jejum e oração. Base nas Escrituras: Isaías 58:6-9 (o jejum que Deus escolheu), Mateus 6:16-18 (como jejuar), Ester 4:16 (jejum antes de intervir pelo povo), Daniel 9:3 (Daniel busca a Deus em jejum e oração).`,
+  "Nacoes": `TEMA: Intercessão por nações e cidades. Base nas Escrituras: Jeremias 29:7 (buscai a paz da cidade), Neemias 1:4-11 (Neemias intercede pela cidade), 2 Crônicas 7:14 (se o meu povo se humilhar).`,
+  "Impartição": `TEMA: Impartição do Espírito Santo e avivamento. Base nas Escrituras: Atos 2:1-4 (Pentecostes), 2 Reis 2:9-15 (Eliseu recebe porção dobrada do espírito de Elias), 2 Timóteo 1:6 (aviva o dom que está em ti).`
+};
+
+const masterKnowledge = {
+  "Todos": ``,
+  "Randy Clark": `Randy Clark (EUA), fundador do Global Awakening, é citado como testemunho de que a impartição do Espírito Santo, buscada em oração, produz avivamento — confirmando na prática o princípio de 2 Timóteo 1:6 e Atos 2.`,
+  "Cindy Jacobs": `Cindy Jacobs (EUA), da Generals International, é citada como testemunho de que a intercessão perseverante e a autoridade em oração (Lucas 10:19, Mateus 16:19) trazem transformação sobre cidades e nações.`,
+  "Neuza Itioka": `Neuza Itioka (Brasil), doutora em Missiologia, é citada como testemunho de que discernimento espiritual fundamentado nas Escrituras (Efésios 6) sustenta a batalha espiritual de forma equilibrada e bíblica.`,
+  "Oswaldo Lôbo Jr": `Pr. Oswaldo Lôbo Jr (Brasil), do Instituto Exodus, é citado como testemunho de que a intercessão como arma espiritual (2 Coríntios 10:3-5) exige tanto ousadia quanto profundo embasamento bíblico.`,
+  "Pastor Coty": `Pr. Marcos Coty (Brasil/JOCUM) é citado como testemunho de que a oração intercessora por nações (Jeremias 29:7, Neemias 1) é obra de décadas de fidelidade, não de resultados imediatos.`,
+  "Pastora Ezenete": `Pra. Ezenete Rodrigues (Brasil), da IBL/Diante do Trono, é citada como testemunho de que o quebrantamento diante do trono de Deus (Salmos 51, Isaías 6) precede e sustenta uma vida de intercessão genuína.`,
+  "David Wilkerson": `David Wilkerson (EUA), fundador do Teen Challenge e autor de "A Cruz e o Punhal", é citado como testemunho de que a obediência a um chamado de intercessão, mesmo em meio a ambientes de violência e desesperança, é confirmada por Deus (Ezequiel 22:30).`,
+  "Dave Roberson": `Dave Roberson (EUA), do Family Prayer Center, é citado como testemunho de que a busca perseverante pela presença e pelo poder de Deus em oração (Atos 2, 2 Reis 2) produz vida no Espírito e discernimento profético.`
+};
+
+const SYSTEM_QUIZ = `Você é um professor especialista em intercessão cristã gerando uma pergunta de múltipla escolha.
+A pergunta deve ter como foco principal o PRINCÍPIO OU FUNDAMENTO BÍBLICO do tema, não a biografia de nenhum pastor.
+Se um intercessor for mencionado, ele deve aparecer apenas como testemunho/exemplo de que aquele princípio bíblico funciona, nunca como o assunto central da pergunta.
+Responda APENAS em JSON válido, sem qualquer tipo de marcação markdown ou texto antes/depois.
+Exemplo de estrutura:
+{
+  "pergunta": "texto da pergunta, com foco no princípio bíblico",
+  "referencia_intercessor": "qual intercessor (se houver) confirma esse princípio em seu testemunho de vida",
+  "opcoes": ["A) opção 1", "B) opção 2", "C) opção 3", "D) opção 4"],
+  "correta": 0,
+  "explicacao": "explicação em 2-4 frases, ancorada no texto bíblico",
+  "versiculo": "Livro capítulo:versículo — texto do versículo na versão NAA"
+}`;
+
+window.addEventListener('DOMContentLoaded', () => {
+  const textarea = document.getElementById('userInput');
+  textarea.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  checkSession();
+});
+
+function toggleAuthMode() {
+  isSignupMode = !isSignupMode;
+  document.getElementById('authNameField').style.display = isSignupMode ? 'block' : 'none';
+  document.getElementById('authSubmitBtn').textContent = isSignupMode ? 'Cadastrar' : 'Entrar';
+  document.getElementById('authSubtitle').textContent = isSignupMode ? 'Crie sua conta para começar' : 'Entre para continuar seus estudos';
+  document.getElementById('authToggleText').innerHTML = isSignupMode
+    ? 'Já tem conta? <a onclick="toggleAuthMode()">Entrar</a>'
+    : 'Ainda não tem conta? <a onclick="toggleAuthMode()">Cadastre-se</a>';
+  hideAuthError();
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('authError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function hideAuthError() {
+  document.getElementById('authError').style.display = 'none';
+}
+
+async function submitAuth() {
+  hideAuthError();
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const name = document.getElementById('authNameField').value.trim();
+
+  if (!email || !password) {
+    showAuthError('Preencha e-mail e senha.');
+    return;
+  }
+  if (isSignupMode && !name) {
+    showAuthError('Digite seu nome.');
+    return;
+  }
+
+  const btn = document.getElementById('authSubmitBtn');
+  btn.disabled = true;
+
+  try {
+    if (isSignupMode) {
+      const { data, error } = await sb.auth.signUp({
+        email, password,
+        options: { data: { display_name: name } }
+      });
+      if (error) throw error;
+      if (data.user && !data.session) {
+        showAuthError('Conta criada! Verifique seu e-mail para confirmar antes de entrar.');
+        btn.disabled = false;
+        return;
+      }
+      await onLoginSuccess(data.user);
+    } else {
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      await onLoginSuccess(data.user);
+    }
+  } catch (e) {
+    showAuthError(e.message || 'Erro ao autenticar. Tente novamente.');
+    btn.disabled = false;
+  }
+}
+
+async function checkSession() {
+  const { data } = await sb.auth.getSession();
+  if (data.session && data.session.user) {
+    await onLoginSuccess(data.session.user);
+  }
+}
+
+async function onLoginSuccess(user) {
+  currentUser = user;
+  document.getElementById('authOverlay').style.display = 'none';
+  document.getElementById('userBar').style.display = 'flex';
+
+  const { data: profile } = await sb.from('profiles').select('display_name').eq('id', user.id).single();
+  const name = profile?.display_name || user.email;
+  document.getElementById('userNameLabel').textContent = `Olá, ${name} 🙏`;
+
+  await loadChatHistory();
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  currentUser = null;
+  geminiHistory = [];
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('userBar').style.display = 'none';
+  document.getElementById('authOverlay').style.display = 'flex';
+  document.getElementById('authEmail').value = '';
+  document.getElementById('authPassword').value = '';
+}
+
+async function loadChatHistory() {
+  const { data, error } = await sb
+    .from('chat_messages')
+    .select('role, content')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: true })
+    .limit(50);
+
+  if (error || !data || data.length === 0) return;
+
+  geminiHistory = data.map(m => ({ role: m.role, parts: [{ text: m.content }] }));
+  data.forEach(m => addMessage(m.content, m.role === 'model' ? 'agent' : 'user'));
+}
+
+async function saveChatMessage(role, content) {
+  if (!currentUser) return;
+  await sb.from('chat_messages').insert({ user_id: currentUser.id, role, content });
+}
+
+async function checkDailyLimit() {
+  if (!currentUser) return true;
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const { count } = await sb
+    .from('chat_messages')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', currentUser.id)
+    .eq('role', 'user')
+    .gte('created_at', startOfDay.toISOString());
+
+  return (count || 0) < DAILY_MESSAGE_LIMIT;
+}
+
+function setTheme(el, theme) {
+  const row = el.closest('.masters-grid');
+  row.querySelectorAll('.master-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  activeTheme = theme;
+  updateBadge();
+}
+
+function setMaster(el, master) {
+  const row = el.closest('.masters-grid');
+  row.querySelectorAll('.master-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  activeMaster = master;
+  updateBadge();
+}
+
+function updateBadge() {
+  const themeLabels = {
+    "Todos": "Todos os temas", "Fundamentos": "Fundamentos", "Autoridade": "Autoridade Espiritual",
+    "Quebrantamento": "Quebrantamento", "Jejum": "Jejum e Oração", "Nacoes": "Intercessão por Nações",
+    "Impartição": "Impartição e Avivamento"
+  };
+  let text = `📖 Tema: ${themeLabels[activeTheme] || activeTheme}`;
+  if (activeMaster !== 'Todos') text += ` · ✦ ${activeMaster}`;
+  document.getElementById('activeMasterBadge').textContent = text;
+}
+
+function getSystemPrompt() {
+  const themeContext = themeKnowledge[activeTheme] || themeKnowledge["Todos"];
+  const testemunho = masterKnowledge[activeMaster] || "";
+  return `Você é um mestre de intercessão cristã instruindo um aprendiz, com uma prioridade clara: A BÍBLIA É O FUNDAMENTO, SEMPRE.
+
+CONTEXTO DO TEMA BÍBLICO SELECIONADO:
+${themeContext}
+
+${testemunho ? `TESTEMUNHO A CITAR COMO CONFIRMAÇÃO (não como fonte de autoridade):\n${testemunho}` : ''}
+
+REGRAS OBRIGATÓRIAS DE ESTRUTURA:
+1. Comece SEMPRE pelo texto bíblico e pelo princípio das Escrituras. A Palavra de Deus é a única autoridade normativa.
+2. SEMPRE cite versículos bíblicos usando a versão NAA (Nova Almeida Atualizada), com referência (livro, capítulo e versículo).
+3. Só depois de estabelecer o fundamento bíblico, se fizer sentido, mencione que o ministério de algum intercessor é um TESTEMUNHO de que esse princípio funciona na prática — nunca apresente o intercessor como fonte da verdade, apenas como exemplo de vida transformada pela obediência à Palavra.
+4. Responda sempre em português brasileiro.
+5. Mantenha respostas práticas e inspiradoras, entre 200-400 palavras.`;
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['chat','quiz','masters'][i] === tab);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function selectTopic(el) {
+  document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedTopic = el.dataset.topic;
+}
+
+function quickAsk(text) {
+  document.getElementById('userInput').value = text;
+  sendMessage();
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function parseMarkdown(text) {
+  let html = escapeHtml(text);
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\n/g, '<br>');
+  return html;
+}
+
+function addMessage(content, role) {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'agent' ? 'agent' : 'user');
+  const label = document.createElement('div');
+  label.className = 'msg-label';
+  label.textContent = role === 'agent' ? '🕯️ Escola de Intercessão (Gemini)' : '✦ Você';
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.innerHTML = role === 'agent' ? parseMarkdown(content) : escapeHtml(content).replace(/\n/g, '<br>');
+  div.appendChild(label);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addTyping() {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg agent';
+  div.id = 'typing-indicator';
+  div.innerHTML = '<div class="msg-label">🕯️ Escola de Intercessão</div><div class="typing-bubble"><span></span><span></span><span></span></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if (t) t.remove();
+}
+
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const btn = document.getElementById('sendBtn');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const withinLimit = await checkDailyLimit();
+  if (!withinLimit) {
+    addMessage(`Você atingiu o limite de ${DAILY_MESSAGE_LIMIT} mensagens hoje. Volte amanhã para continuar aprendendo! 🙏`, 'agent');
+    return;
+  }
+
+  addMessage(text, 'user');
+  input.value = '';
+  btn.disabled = true;
+  addTyping();
+
+  geminiHistory.push({ role: 'user', parts: [{ text: text }] });
+  saveChatMessage('user', text);
+
+  try {
+    const res = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: GEMINI_MODEL,
+        body: {
+          system_instruction: { parts: [{ text: getSystemPrompt() }] },
+          contents: geminiHistory
+        }
+      })
+    });
+
+    const data = await res.json();
+    removeTyping();
+    
+    if (data.error) {
+      addMessage(`Erro na API do Gemini: ${data.error.message}`, 'agent');
+    } else if (data.candidates && data.candidates[0].content) {
+      const reply = data.candidates[0].content.parts[0].text;
+      addMessage(reply, 'agent');
+      geminiHistory.push({ role: 'model', parts: [{ text: reply }] });
+      saveChatMessage('model', reply);
+    } else {
+      addMessage('A resposta foi bloqueada pelos filtros de segurança.', 'agent');
+    }
+  } catch(e) {
+    removeTyping();
+    addMessage('Erro de conexão com a API. Verifique sua chave ou conexão.', 'agent');
+  }
+  btn.disabled = false;
+}
+
+async function generateQuiz() {
+  const area = document.getElementById('quizArea');
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  area.innerHTML = `<div class="loading-text">✨ Preparando pergunta sobre: <em>${selectedTopic}</em>...</div>`;
+  quizAnswered = false;
+
+  try {
+    const res = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: GEMINI_MODEL,
+        body: {
+          system_instruction: { parts: [{ text: SYSTEM_QUIZ }] },
+          contents: [{ role: 'user', parts: [{ text: `Crie uma pergunta de múltipla escolha sobre: ${selectedTopic}.` }] }],
+          generationConfig: { response_mime_type: "application/json" }
+        }
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) {
+      area.innerHTML = `<div class="loading-text">Erro: ${data.error.message}</div>`;
+    } else if (data.candidates && data.candidates[0].content) {
+      let raw = data.candidates[0].content.parts[0].text;
+      raw = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
+      currentQuiz = JSON.parse(raw);
+      renderQuiz(currentQuiz);
+    } else {
+      area.innerHTML = `<div class="loading-text">A pergunta foi bloqueada. Tente outro tema.</div>`;
+    }
+  } catch(e) {
+    area.innerHTML = '<div class="loading-text">Erro ao processar o formato do Quiz. Tente novamente.</div>';
+  }
+  btn.disabled = false;
+}
+
+function renderQuiz(quiz) {
+  const area = document.getElementById('quizArea');
+  let html = `<div class="quiz-box">
+    <div class="quiz-ref">Tema · ${escapeHtml(quiz.referencia_intercessor || 'Intercessão')}</div>
+    <div class="quiz-question">${escapeHtml(quiz.pergunta)}</div>
+    <div class="quiz-options">`;
+  quiz.opcoes.forEach((op, i) => {
+    html += `<button class="option-btn" id="opt${i}" onclick="answerQuiz(${i})">${escapeHtml(op)}</button>`;
+  });
+  html += `</div>
+    <div id="quiz-feedback" style="display:none" class="quiz-feedback"></div>
+    <button class="next-btn" id="nextBtn" style="display:none" onclick="generateQuiz()">Próxima Pergunta →</button>
+  </div>`;
+  area.innerHTML = html;
+}
+
+function answerQuiz(index) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const correct = currentQuiz.correta;
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === correct) btn.classList.add('correct');
+    else if (i === index && index !== correct) btn.classList.add('wrong');
+  });
+
+  if (currentUser) {
+    sb.from('quiz_attempts').insert({
+      user_id: currentUser.id,
+      topic: selectedTopic,
+      question: currentQuiz.pergunta,
+      correct: index === correct
+    });
+  }
+
+  const fb = document.getElementById('quiz-feedback');
+  fb.style.display = 'block';
+  const icon = index === correct ? '✅ Correto!' : '❌ Incorreto.';
+  fb.innerHTML = `<strong>${icon}</strong> ${escapeHtml(currentQuiz.explicacao)}`;
+  if (currentQuiz.versiculo) {
+    fb.innerHTML += `<div class="verse">📖 ${escapeHtml(currentQuiz.versiculo)}</div>`;
+  }
+  document.getElementById('nextBtn').style.display = 'inline-block';
+}
+</script>
+</body>
+</html>
