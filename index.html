@@ -671,6 +671,9 @@
   .user-bar button:hover { border-color: var(--gold); color: var(--gold); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3d2b1f">
+<link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
 
@@ -943,6 +946,13 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   checkSession();
 });
+
+// Registra o Service Worker, o que permite "instalar" o site como app
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch((e) => console.log('SW não registrado:', e));
+  });
+}
 
 function toggleAuthMode() {
   isSignupMode = !isSignupMode;
