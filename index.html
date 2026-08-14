@@ -1133,7 +1133,10 @@ function quickAsk(text) {
   document.getElementById('userInput').value = text;
   sendMessage();
 }
-
+async function getAccessToken() {
+  const { data } = await sb.auth.getSession();
+  return data.session ? data.session.access_token : null;
+}
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
@@ -1197,11 +1200,26 @@ async function sendMessage() {
 
   geminiHistory.push({ role: 'user', parts: [{ text: text }] });
   saveChatMessage('user', text);
-
-  try {
+try {
     const res = await fetch(PROXY_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: GEMINI_MODEL,
+        body: {
+          system_instruction: { parts: [{ text: getSystemPrompt() }] },
+          contents: geminiHistory
+        }
+      })
+    });
+  try {
+    const token = await getAccessToken();
+    const res = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify({
         model: GEMINI_MODEL,
         body: {
@@ -1239,9 +1257,13 @@ async function generateQuiz() {
   quizAnswered = false;
 
   try {
+    const token = await getAccessToken();
     const res = await fetch(PROXY_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify({
         model: GEMINI_MODEL,
         body: {
@@ -1254,7 +1276,7 @@ async function generateQuiz() {
 
     const data = await res.json();
     if (data.error) {
-      area.innerHTML = `<div class="loading-text">Erro: ${data.error.message}</div>`;
+     area.innerHTML = `<div class="loading-text">Erro: ${escapeHtml(data.error.message || '')}</div>`;
     } else if (data.candidates && data.candidates[0].content) {
       let raw = data.candidates[0].content.parts[0].text;
       raw = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
