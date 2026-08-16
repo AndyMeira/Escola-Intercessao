@@ -49,12 +49,7 @@
     position: relative;
   }
 
-  header::before {
-    content: '✦ ✦ ✦';
-    display: block;
-    color: var(--gold);
-    font-size: 12px;
-    letter-spacing: 8px;
+  header .header-ornament {
     margin-bottom: 12px;
   }
 
@@ -138,6 +133,9 @@
     transition: all 0.2s;
     font-family: 'Lato', sans-serif;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .master-chip.active, .master-chip:hover {
@@ -199,7 +197,7 @@
     gap: 12px;
   }
 
-  .flame { font-size: 16px; animation: flicker 2s infinite alternate; }
+  .flame { font-size: 16px; color: var(--gold-bright); animation: flicker 2s infinite alternate; }
   @keyframes flicker { 0%{opacity:1;transform:scale(1)} 100%{opacity:0.7;transform:scale(0.95)} }
 
   .chat-header-text {
@@ -386,7 +384,8 @@
     box-shadow: 0 2px 10px rgba(184,134,11,0.15);
   }
 
-  .topic-card .t-icon { font-size: 20px; margin-bottom: 6px; }
+  .topic-card .t-icon { margin-bottom: 6px; color: var(--gold); }
+  .topic-card .t-icon .icon { width: 22px; height: 22px; }
   .topic-card .t-name {
     font-size: 13px;
     color: var(--brown);
@@ -669,6 +668,61 @@
   }
 
   .user-bar button:hover { border-color: var(--gold); color: var(--gold); }
+
+  .icon {
+    width: 1em;
+    height: 1em;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: -0.15em;
+    flex-shrink: 0;
+  }
+
+  .header-ornament {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .header-ornament .icon { width: 11px; height: 11px; }
+
+  .t-icon .icon, .master-chip .icon { width: 17px; height: 17px; }
+  .tab-btn .icon { width: 15px; height: 15px; margin-right: 5px; }
+  .chat-header-text .icon { width: 14px; height: 14px; margin-right: 6px; }
+
+  .icon-seal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .icon-seal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    opacity: 0.45;
+  }
+  .icon-seal::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    opacity: 0.25;
+  }
+  .icon-seal .icon { width: 15px; height: 15px; position: relative; z-index: 1; stroke-width: 1.8; }
+  .icon-seal.correct { color: var(--sage); }
+  .icon-seal.wrong { color: var(--terracotta); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="manifest" href="manifest.json">
@@ -679,6 +733,39 @@
 <meta name="apple-mobile-web-app-title" content="Intercessão">
 </head>
 <body>
+
+<svg style="display:none" aria-hidden="true">
+  <defs>
+    <g id="sword-blade"><path d="M12 2 L12 15"/><path d="M9 15 H15"/><path d="M12 15 V19.5"/><circle cx="12" cy="20.3" r="1"/></g>
+
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6 C10 4.5 6 4 3 4.5 V18 C6 17.5 10 18 12 19.5 C14 18 18 17.5 21 18 V4.5 C18 4 14 4.5 12 6 Z"/><path d="M12 6 V19.5"/></symbol>
+
+    <symbol id="i-scroll" viewBox="0 0 24 24"><circle cx="7" cy="5.5" r="2"/><circle cx="17" cy="18.5" r="2"/><path d="M7 5.5 H15 a2 2 0 0 1 2 2 V16.5 a2 2 0 0 1 -2 2 H9"/><path d="M9.5 9.5 H15 M9.5 12.5 H15 M9.5 15.5 H13.5"/></symbol>
+
+    <symbol id="i-swords" viewBox="0 0 24 24"><use href="#sword-blade" transform="rotate(35 12 12)"/><use href="#sword-blade" transform="rotate(-35 12 12)"/></symbol>
+
+    <symbol id="i-pray" viewBox="0 0 24 24"><path d="M12 3 C9 6 7.5 9.5 7.5 13.5 C7.5 16.5 9 19 12 21 C15 19 16.5 16.5 16.5 13.5 C16.5 9.5 15 6 12 3 Z"/><path d="M12 3 V21"/><path d="M9 10 H10.4 M9 13 H10.4 M9 16 H10.4 M13.6 10 H15 M13.6 13 H15 M13.6 16 H15"/></symbol>
+
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3 C9 7 8 10 8 12.5 C8 15 9.8 17 12 17 C14.2 17 16 15 16 12.5 C16 10 15 7 12 3 Z"/><path d="M12 9 C10.8 11 10.3 12 10.3 13.2 C10.3 14.5 11 15.5 12 15.5 C13 15.5 13.7 14.5 13.7 13.2 C13.7 12 13.2 11 12 9 Z"/></symbol>
+
+    <symbol id="i-fire" viewBox="0 0 24 24"><path d="M12 2 C8 6 6 10 6 13.5 C6 17.5 8.7 20.5 12 20.5 C15.3 20.5 18 17.5 18 13.5 C18 11.5 17.2 9.7 16 8 C15.8 10 14.8 11 13.8 11 C14.3 8.5 13.5 5.5 12 2 Z"/></symbol>
+
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12 H21 M12 3 C8 7 8 17 12 21 C16 17 16 7 12 3 Z M4.5 7.5 C8 9 16 9 19.5 7.5 M4.5 16.5 C8 15 16 15 19.5 16.5"/></symbol>
+
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3 C12.5 7 13 8.5 17 9 C13 9.5 12.5 11 12 15 C11.5 11 11 9.5 7 9 C11 8.5 11.5 7 12 3 Z"/></symbol>
+
+    <symbol id="i-dove" viewBox="0 0 24 24"><path d="M2 15 C5 11 8 11 11 13.5 C11.5 11.5 11.7 10 12 8 C12.3 10 12.5 11.5 13 13.5 C16 11 19 11 22 15"/><path d="M10.5 13.8 C11 15 12 15.6 12 15.6 C12 15.6 13 15 13.5 13.8"/></symbol>
+
+    <symbol id="i-quill" viewBox="0 0 24 24"><path d="M20 4 C14 6 8 10 5 17 L4 20 L7 19 C13 16 18 11 20 4 Z"/><path d="M9.5 14.5 L15.5 8.5 M4 20 L7 17"/></symbol>
+
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M6 12.3 L10 16.3 L18 7"/></symbol>
+
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M7 7 L17 17 M17 7 L7 17"/></symbol>
+
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 4 L13 11 L20 12 L13 13 L12 20 L11 13 L4 12 L11 11 Z"/></symbol>
+  </defs>
+</svg>
+
 
 <div class="auth-overlay" id="authOverlay">
   <div class="auth-box">
@@ -702,6 +789,11 @@
   </div>
 
   <header>
+    <div class="header-ornament">
+      <svg class="icon"><use href="#i-star"/></svg>
+      <svg class="icon"><use href="#i-star"/></svg>
+      <svg class="icon"><use href="#i-star"/></svg>
+    </div>
     <h1>Escola de <span>Intercessão</span></h1>
     <p>Baseado nos ensinamentos da Bíblia e dos grandes intercessores</p>
   </header>
@@ -709,17 +801,17 @@
   <div class="masters-section">
     <div class="masters-label">Tema bíblico:</div>
     <div class="masters-grid">
-      <button class="master-chip active" onclick="setTheme(this, 'Todos')" data-theme="Todos">📖 Todos os temas</button>
-      <button class="master-chip" onclick="setTheme(this, 'Fundamentos')" data-theme="Fundamentos">📜 Fundamentos da Intercessão</button>
-      <button class="master-chip" onclick="setTheme(this, 'Autoridade')" data-theme="Autoridade">⚔️ Autoridade Espiritual</button>
-      <button class="master-chip" onclick="setTheme(this, 'Quebrantamento')" data-theme="Quebrantamento">🙏 Quebrantamento e Consagração</button>
-      <button class="master-chip" onclick="setTheme(this, 'Jejum')" data-theme="Jejum">🕯️ Jejum e Oração</button>
-      <button class="master-chip" onclick="setTheme(this, 'Nacoes')" data-theme="Nacoes">🌎 Intercessão por Nações</button>
-      <button class="master-chip" onclick="setTheme(this, 'Impartição')" data-theme="Impartição">✨ Impartição e Avivamento</button>
+      <button class="master-chip active" onclick="setTheme(this, 'Todos')" data-theme="Todos"><svg class="icon"><use href="#i-book"/></svg> Todos os temas</button>
+      <button class="master-chip" onclick="setTheme(this, 'Fundamentos')" data-theme="Fundamentos"><svg class="icon"><use href="#i-scroll"/></svg> Fundamentos da Intercessão</button>
+      <button class="master-chip" onclick="setTheme(this, 'Autoridade')" data-theme="Autoridade"><svg class="icon"><use href="#i-swords"/></svg> Autoridade Espiritual</button>
+      <button class="master-chip" onclick="setTheme(this, 'Quebrantamento')" data-theme="Quebrantamento"><svg class="icon"><use href="#i-pray"/></svg> Quebrantamento e Consagração</button>
+      <button class="master-chip" onclick="setTheme(this, 'Jejum')" data-theme="Jejum"><svg class="icon"><use href="#i-flame"/></svg> Jejum e Oração</button>
+      <button class="master-chip" onclick="setTheme(this, 'Nacoes')" data-theme="Nacoes"><svg class="icon"><use href="#i-globe"/></svg> Intercessão por Nações</button>
+      <button class="master-chip" onclick="setTheme(this, 'Impartição')" data-theme="Impartição"><svg class="icon"><use href="#i-spark"/></svg> Impartição e Avivamento</button>
     </div>
     <div class="masters-label" style="margin-top:16px;">Ver testemunho de (opcional):</div>
     <div class="masters-grid">
-      <button class="master-chip active" onclick="setMaster(this, 'Todos')" data-master="Todos">🌍 Nenhum específico</button>
+      <button class="master-chip active" onclick="setMaster(this, 'Todos')" data-master="Todos"><svg class="icon"><use href="#i-globe"/></svg> Nenhum específico</button>
       <button class="master-chip" onclick="setMaster(this, 'Randy Clark')" data-master="Randy Clark">Randy Clark</button>
       <button class="master-chip" onclick="setMaster(this, 'Cindy Jacobs')" data-master="Cindy Jacobs">Cindy Jacobs</button>
       <button class="master-chip" onclick="setMaster(this, 'Neuza Itioka')" data-master="Neuza Itioka">Neuza Itioka</button>
@@ -732,21 +824,21 @@
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('chat')">💬 Aprender & Perguntar</button>
-    <button class="tab-btn" onclick="switchTab('quiz')">📜 Exercícios & Quiz</button>
-    <button class="tab-btn" onclick="switchTab('masters')">📚 Os Intercessores</button>
+    <button class="tab-btn active" onclick="switchTab('chat')"><svg class="icon"><use href="#i-quill"/></svg> Aprender & Perguntar</button>
+    <button class="tab-btn" onclick="switchTab('quiz')"><svg class="icon"><use href="#i-scroll"/></svg> Exercícios & Quiz</button>
+    <button class="tab-btn" onclick="switchTab('masters')"><svg class="icon"><use href="#i-book"/></svg> Os Intercessores</button>
   </div>
 
   <div id="tab-chat" class="tab-panel active">
     <div class="chat-window">
       <div class="chat-header">
-        <span class="flame">🕯️</span>
+        <span class="flame"><svg class="icon"><use href="#i-flame"/></svg></span>
         <span class="chat-header-text">Sala de Ensino — Intercessão</span>
-        <span class="active-master-badge" id="activeMasterBadge">📖 Tema: Todos</span>
+        <span class="active-master-badge" id="activeMasterBadge"><svg class="icon"><use href="#i-book"/></svg> Tema: Todos</span>
       </div>
       <div class="messages" id="messages">
         <div class="msg agent">
-          <div class="msg-label">🕯️ Escola de Intercessão</div>
+          <div class="msg-label"><svg class="icon"><use href="#i-flame"/></svg> Escola de Intercessão</div>
           <div class="msg-bubble">
             Bem-vindo(a), servo(a) do Senhor! 🙏<br><br>
             Esta escola é fundamentada, antes de tudo, na <strong>Palavra de Deus</strong>. Cada resposta parte diretamente das Escrituras, na <strong>versão NAA</strong> (Nova Almeida Atualizada).<br><br>
@@ -781,47 +873,47 @@
         <p style="color:var(--muted);font-size:13px;margin-bottom:14px;">Escolha um tema e teste seus conhecimentos:</p>
         <div class="topic-grid" id="topicGrid">
           <div class="topic-card selected" data-topic="Fundamentos bíblicos da intercessão" onclick="selectTopic(this)">
-            <div class="t-icon">📜</div>
+            <div class="t-icon"><svg class="icon"><use href="#i-scroll"/></svg></div>
             <div class="t-name">Fundamentos Bíblicos</div>
             <div class="t-sub">Base nas Escrituras</div>
           </div>
           <div class="topic-card" data-topic="Intercessão militante segundo Cindy Jacobs — tomar as portas do inimigo" onclick="selectTopic(this)">
-            <div class="t-icon">⚔️</div>
+            <div class="t-icon"><svg class="icon"><use href="#i-swords"/></svg></div>
             <div class="t-name">Intercessão Militante</div>
             <div class="t-sub">Cindy Jacobs</div>
           </div>
           <div class="topic-card" data-topic="Batalha espiritual e intercessão estratégica segundo Neuza Itioka" onclick="selectTopic(this)">
-            <div class="t-icon">🕊️</div>
+            <div class="t-icon"><svg class="icon"><use href="#i-dove"/></svg></div>
             <div class="t-name">Batalha Espiritual</div>
             <div class="t-sub">Neuza Itioka</div>
           </div>
           <div class="topic-card" data-topic="Intercessão em chamas e autoridade espiritual segundo Oswaldo Lôbo Jr" onclick="selectTopic(this)">
-            <div class="t-icon">🔥</div>
+            <div class="t-icon"><svg class="icon"><use href="#i-fire"/></svg></div>
             <div class="t-name">Intercessão em Chamas</div>
             <div class="t-sub">Pr. Oswaldo Lôbo Jr</div>
           </div>
           <div class="topic-card" data-topic="Conquista de cidades e intercessão por nações segundo Pr. Coty — JOCUM" onclick="selectTopic(this)">
-            <div class="t-icon">🌎</div>
+            <div class="t-icon"><svg class="icon"><use href="#i-globe"/></svg></div>
             <div class="t-name">Conquistar Nações</div>
             <div class="t-sub">Pr. Coty / JOCUM</div>
           </div>
           <div class="topic-card" data-topic="O intercessor quebrantado, liberto e a sala do trono segundo Pra. Ezenete Rodrigues" onclick="selectTopic(this)">
-            <div class="t-icon">🙏</div>
+            <div class="t-icon"><svg class="icon"><use href="#i-pray"/></svg></div>
             <div class="t-name">Sala do Trono</div>
             <div class="t-sub">Pra. Ezenete Rodrigues</div>
           </div>
           <div class="topic-card" data-topic="Impartição do Espírito Santo e avivamento ligado à intercessão — Randy Clark" onclick="selectTopic(this)">
-            <div class="t-icon">✨</div>
+            <div class="t-icon"><svg class="icon"><use href="#i-spark"/></svg></div>
             <div class="t-name">Impartição & Avivamento</div>
             <div class="t-sub">Randy Clark</div>
           </div>
           <div class="topic-card" data-topic="Intercessores bíblicos: Moisés, Daniel, Paulo, Ester e seus métodos" onclick="selectTopic(this)">
-            <div class="t-icon">📖</div>
+            <div class="t-icon"><svg class="icon"><use href="#i-book"/></svg></div>
             <div class="t-name">Intercessores Bíblicos</div>
             <div class="t-sub">Moisés, Daniel, Paulo, Ester</div>
           </div>
         </div>
-        <button class="generate-btn" id="generateBtn" onclick="generateQuiz()">✦ Gerar Pergunta</button>
+        <button class="generate-btn" id="generateBtn" onclick="generateQuiz()"><svg class="icon"><use href="#i-star"/></svg> Gerar Pergunta</button>
       </div>
       <div id="quizArea"></div>
     </div>
@@ -1105,9 +1197,14 @@ function updateBadge() {
     "Quebrantamento": "Quebrantamento", "Jejum": "Jejum e Oração", "Nacoes": "Intercessão por Nações",
     "Impartição": "Impartição e Avivamento"
   };
-  let text = `📖 Tema: ${themeLabels[activeTheme] || activeTheme}`;
-  if (activeMaster !== 'Todos') text += ` · ✦ ${activeMaster}`;
-  document.getElementById('activeMasterBadge').textContent = text;
+  const themeIcons = {
+    "Todos": "i-book", "Fundamentos": "i-scroll", "Autoridade": "i-swords",
+    "Quebrantamento": "i-pray", "Jejum": "i-flame", "Nacoes": "i-globe", "Impartição": "i-spark"
+  };
+  const icon = themeIcons[activeTheme] || "i-book";
+  let html = `<svg class="icon"><use href="#${icon}"/></svg> Tema: ${themeLabels[activeTheme] || activeTheme}`;
+  if (activeMaster !== 'Todos') html += ` · <svg class="icon"><use href="#i-star"/></svg> ${activeMaster}`;
+  document.getElementById('activeMasterBadge').innerHTML = html;
 }
 
 function getSystemPrompt() {
@@ -1171,7 +1268,9 @@ function addMessage(content, role) {
   div.className = 'msg ' + (role === 'agent' ? 'agent' : 'user');
   const label = document.createElement('div');
   label.className = 'msg-label';
-  label.textContent = role === 'agent' ? '🕯️ Escola de Intercessão' : '✦ Você';
+  label.innerHTML = role === 'agent'
+    ? '<svg class="icon"><use href="#i-flame"/></svg> Escola de Intercessão'
+    : '<svg class="icon"><use href="#i-star"/></svg> Você';
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   bubble.innerHTML = role === 'agent' ? parseMarkdown(content) : escapeHtml(content).replace(/\n/g, '<br>');
@@ -1186,7 +1285,7 @@ function addTyping() {
   const div = document.createElement('div');
   div.className = 'msg agent';
   div.id = 'typing-indicator';
-  div.innerHTML = '<div class="msg-label">🕯️ Escola de Intercessão</div><div class="typing-bubble"><span></span><span></span><span></span></div>';
+  div.innerHTML = '<div class="msg-label"><svg class="icon"><use href="#i-flame"/></svg> Escola de Intercessão</div><div class="typing-bubble"><span></span><span></span><span></span></div>';
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
 }
@@ -1257,7 +1356,7 @@ async function generateQuiz() {
   const area = document.getElementById('quizArea');
   const btn = document.getElementById('generateBtn');
   btn.disabled = true;
-  area.innerHTML = `<div class="loading-text">✨ Preparando pergunta sobre: <em>${selectedTopic}</em>...</div>`;
+  area.innerHTML = `<div class="loading-text"><svg class="icon"><use href="#i-spark"/></svg> Preparando pergunta sobre: <em>${selectedTopic}</em>...</div>`;
   quizAnswered = false;
 
   try {
@@ -1332,10 +1431,14 @@ function answerQuiz(index) {
 
   const fb = document.getElementById('quiz-feedback');
   fb.style.display = 'block';
-  const icon = index === correct ? '✅ Correto!' : '❌ Incorreto.';
-  fb.innerHTML = `<strong>${icon}</strong> ${escapeHtml(currentQuiz.explicacao)}`;
+  const isCorrect = index === correct;
+  const seal = isCorrect
+    ? '<span class="icon-seal correct"><svg class="icon"><use href="#i-check"/></svg></span>'
+    : '<span class="icon-seal wrong"><svg class="icon"><use href="#i-x"/></svg></span>';
+  const label = isCorrect ? 'Correto!' : 'Incorreto.';
+  fb.innerHTML = `<div style="display:flex;align-items:center;gap:10px;">${seal}<strong>${label}</strong></div><div style="margin-top:10px;">${escapeHtml(currentQuiz.explicacao)}</div>`;
   if (currentQuiz.versiculo) {
-    fb.innerHTML += `<div class="verse">📖 ${escapeHtml(currentQuiz.versiculo)}</div>`;
+    fb.innerHTML += `<div class="verse"><svg class="icon"><use href="#i-book"/></svg> ${escapeHtml(currentQuiz.versiculo)}</div>`;
   }
   document.getElementById('nextBtn').style.display = 'inline-block';
 }
