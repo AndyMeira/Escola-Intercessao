@@ -809,18 +809,6 @@
       <button class="master-chip" onclick="setTheme(this, 'Nacoes')" data-theme="Nacoes"><svg class="icon"><use href="#i-globe"/></svg> Intercessão por Nações</button>
       <button class="master-chip" onclick="setTheme(this, 'Impartição')" data-theme="Impartição"><svg class="icon"><use href="#i-spark"/></svg> Impartição e Avivamento</button>
     </div>
-    <div class="masters-label" style="margin-top:16px;">Ver testemunho de (opcional):</div>
-    <div class="masters-grid">
-      <button class="master-chip active" onclick="setMaster(this, 'Todos')" data-master="Todos"><svg class="icon"><use href="#i-globe"/></svg> Nenhum específico</button>
-      <button class="master-chip" onclick="setMaster(this, 'Randy Clark')" data-master="Randy Clark">Randy Clark</button>
-      <button class="master-chip" onclick="setMaster(this, 'Cindy Jacobs')" data-master="Cindy Jacobs">Cindy Jacobs</button>
-      <button class="master-chip" onclick="setMaster(this, 'Neuza Itioka')" data-master="Neuza Itioka">Neuza Itioka</button>
-      <button class="master-chip" onclick="setMaster(this, 'Oswaldo Lôbo Jr')" data-master="Oswaldo Lôbo Jr">Pr. Lôbo Jr</button>
-      <button class="master-chip" onclick="setMaster(this, 'Pastor Coty')" data-master="Pastor Coty">Pr. Coty</button>
-      <button class="master-chip" onclick="setMaster(this, 'Pastora Ezenete')" data-master="Pastora Ezenete">Pra. Ezenete</button>
-      <button class="master-chip" onclick="setMaster(this, 'David Wilkerson')" data-master="David Wilkerson">David Wilkerson</button>
-      <button class="master-chip" onclick="setMaster(this, 'Dave Roberson')" data-master="Dave Roberson">Dave Roberson</button>
-    </div>
   </div>
 
   <div class="tabs">
@@ -842,8 +830,8 @@
           <div class="msg-bubble">
             Bem-vindo(a), servo(a) do Senhor! 🙏<br><br>
             Esta escola é fundamentada, antes de tudo, na <strong>Palavra de Deus</strong>. Cada resposta parte diretamente das Escrituras, na <strong>versão NAA</strong> (Nova Almeida Atualizada).<br><br>
-            Intercessores como <em>Randy Clark, Cindy Jacobs, Neuza Itioka, Pr. Oswaldo Lôbo Jr., Pr. Coty, Pra. Ezenete Rodrigues, David Wilkerson e Dave Roberson</em> são citados apenas como <strong>testemunhos</strong> de que esses princípios bíblicos, quando vividos, transformam vidas — eles confirmam a Palavra, não a substituem.<br><br>
-            Você pode escolher um tema bíblico acima e, se quiser, ver o testemunho de um intercessor específico sobre esse tema. O que deseja aprender hoje?
+            De vez em quando, o testemunho de vida de algum intercessor pode ser citado — sempre como <strong>confirmação</strong> de que um princípio bíblico funciona na prática, nunca como fonte da verdade.<br><br>
+            Você pode escolher um tema bíblico acima. O que deseja aprender hoje?
           </div>
         </div>
       </div>
@@ -855,13 +843,13 @@
 
     <div class="quick-prompts">
       <button class="quick-btn" onclick="quickAsk('O que é intercessão e qual é o seu fundamento bíblico?')">O que é intercessão?</button>
-      <button class="quick-btn" onclick="quickAsk('Como Cindy Jacobs ensina sobre a intercessão militante e tomar as portas do inimigo?')">Intercessão militante</button>
-      <button class="quick-btn" onclick="quickAsk('Como Neuza Itioka ensina sobre batalha espiritual e intercessão estratégica?')">Batalha espiritual</button>
-      <button class="quick-btn" onclick="quickAsk('Como Oswaldo Lôbo Jr. ensina o intercessor a usar as armas de guerra espiritual?')">Armas espirituais</button>
-      <button class="quick-btn" onclick="quickAsk('O que Pra. Ezenete Rodrigues ensina sobre o intercessor quebrantado e liberto?')">Intercessor quebrantado</button>
-      <button class="quick-btn" onclick="quickAsk('Como o Pastor Coty ensina sobre a oração de autoridade e conquista de cidades?')">Conquista de cidades</button>
-      <button class="quick-btn" onclick="quickAsk('Como Randy Clark conecta a impartição do Espírito Santo com a intercessão?')">Randy Clark & o Espírito</button>
-      <button class="quick-btn" onclick="quickAsk('Qual a diferença entre oração e intercessão? Como cada um desses mestres explica?')">Oração x Intercessão</button>
+      <button class="quick-btn" onclick="quickAsk('O que a Bíblia ensina sobre intercessão militante e tomar as portas do inimigo em oração?')">Intercessão militante</button>
+      <button class="quick-btn" onclick="quickAsk('O que a Bíblia ensina sobre batalha espiritual e discernimento na intercessão?')">Batalha espiritual</button>
+      <button class="quick-btn" onclick="quickAsk('Como o intercessor deve usar as armas de guerra espiritual segundo as Escrituras?')">Armas espirituais</button>
+      <button class="quick-btn" onclick="quickAsk('O que a Bíblia ensina sobre o intercessor quebrantado e liberto?')">Intercessor quebrantado</button>
+      <button class="quick-btn" onclick="quickAsk('O que a Bíblia ensina sobre oração de autoridade e conquista de cidades e nações?')">Conquista de cidades</button>
+      <button class="quick-btn" onclick="quickAsk('Como a Bíblia conecta a impartição do Espírito Santo com a intercessão?')">Impartição & o Espírito</button>
+      <button class="quick-btn" onclick="quickAsk('Qual a diferença entre oração e intercessão segundo as Escrituras?')">Oração x Intercessão</button>
       <button class="quick-btn" onclick="quickAsk('Como praticar a intercessão profética?')">Intercessão profética</button>
       <button class="quick-btn" onclick="quickAsk('O que a Bíblia ensina sobre jejum ligado à intercessão?')">Jejum & intercessão</button>
     </div>
@@ -877,35 +865,35 @@
             <div class="t-name">Fundamentos Bíblicos</div>
             <div class="t-sub">Base nas Escrituras</div>
           </div>
-          <div class="topic-card" data-topic="Intercessão militante segundo Cindy Jacobs — tomar as portas do inimigo" onclick="selectTopic(this)">
+          <div class="topic-card" data-topic="Intercessão militante — tomar as portas do inimigo em oração" onclick="selectTopic(this)">
             <div class="t-icon"><svg class="icon"><use href="#i-swords"/></svg></div>
             <div class="t-name">Intercessão Militante</div>
-            <div class="t-sub">Cindy Jacobs</div>
+            <div class="t-sub">Autoridade em oração</div>
           </div>
-          <div class="topic-card" data-topic="Batalha espiritual e intercessão estratégica segundo Neuza Itioka" onclick="selectTopic(this)">
+          <div class="topic-card" data-topic="Batalha espiritual e intercessão estratégica" onclick="selectTopic(this)">
             <div class="t-icon"><svg class="icon"><use href="#i-dove"/></svg></div>
             <div class="t-name">Batalha Espiritual</div>
-            <div class="t-sub">Neuza Itioka</div>
+            <div class="t-sub">Discernimento e guerra espiritual</div>
           </div>
-          <div class="topic-card" data-topic="Intercessão em chamas e autoridade espiritual segundo Oswaldo Lôbo Jr" onclick="selectTopic(this)">
+          <div class="topic-card" data-topic="Intercessão em chamas e autoridade espiritual" onclick="selectTopic(this)">
             <div class="t-icon"><svg class="icon"><use href="#i-fire"/></svg></div>
             <div class="t-name">Intercessão em Chamas</div>
-            <div class="t-sub">Pr. Oswaldo Lôbo Jr</div>
+            <div class="t-sub">Fervor e autoridade espiritual</div>
           </div>
-          <div class="topic-card" data-topic="Conquista de cidades e intercessão por nações segundo Pr. Coty — JOCUM" onclick="selectTopic(this)">
+          <div class="topic-card" data-topic="Conquista de cidades e intercessão por nações" onclick="selectTopic(this)">
             <div class="t-icon"><svg class="icon"><use href="#i-globe"/></svg></div>
             <div class="t-name">Conquistar Nações</div>
-            <div class="t-sub">Pr. Coty / JOCUM</div>
+            <div class="t-sub">Intercessão por cidades e povos</div>
           </div>
-          <div class="topic-card" data-topic="O intercessor quebrantado, liberto e a sala do trono segundo Pra. Ezenete Rodrigues" onclick="selectTopic(this)">
+          <div class="topic-card" data-topic="O intercessor quebrantado, liberto e a sala do trono" onclick="selectTopic(this)">
             <div class="t-icon"><svg class="icon"><use href="#i-pray"/></svg></div>
             <div class="t-name">Sala do Trono</div>
-            <div class="t-sub">Pra. Ezenete Rodrigues</div>
+            <div class="t-sub">Quebrantamento e consagração</div>
           </div>
-          <div class="topic-card" data-topic="Impartição do Espírito Santo e avivamento ligado à intercessão — Randy Clark" onclick="selectTopic(this)">
+          <div class="topic-card" data-topic="Impartição do Espírito Santo e avivamento ligado à intercessão" onclick="selectTopic(this)">
             <div class="t-icon"><svg class="icon"><use href="#i-spark"/></svg></div>
             <div class="t-name">Impartição & Avivamento</div>
-            <div class="t-sub">Randy Clark</div>
+            <div class="t-sub">O poder do Espírito Santo</div>
           </div>
           <div class="topic-card" data-topic="Intercessores bíblicos: Moisés, Daniel, Paulo, Ester e seus métodos" onclick="selectTopic(this)">
             <div class="t-icon"><svg class="icon"><use href="#i-book"/></svg></div>
@@ -988,7 +976,6 @@ const DAILY_MESSAGE_LIMIT = 75;
 let currentUser = null;
 let isSignupMode = false;
 
-let activeMaster = "Todos";
 let activeTheme = "Todos";
 let geminiHistory = [];
 let selectedTopic = "Fundamentos bíblicos da intercessão";
@@ -1018,13 +1005,12 @@ const masterKnowledge = {
 };
 
 const SYSTEM_QUIZ = `Você é um professor especialista em intercessão cristã gerando uma pergunta de múltipla escolha.
-A pergunta deve ter como foco principal o PRINCÍPIO OU FUNDAMENTO BÍBLICO do tema, não a biografia de nenhum pastor.
-Se um intercessor for mencionado, ele deve aparecer apenas como testemunho/exemplo de que aquele princípio bíblico funciona, nunca como o assunto central da pergunta.
+A pergunta deve ter como foco principal o PRINCÍPIO OU FUNDAMENTO BÍBLICO do tema — nunca a biografia ou o nome de algum pastor/intercessor.
+As 4 alternativas devem ter comprimento e nível de detalhe parecidos entre si — nenhuma pode ser visivelmente mais completa, mais específica ou mais "certa" só pelo tamanho ou pela redação. As 3 erradas devem ser plausíveis para quem não domina o tema, não apenas absurdas óbvias.
 Responda APENAS em JSON válido, sem qualquer tipo de marcação markdown ou texto antes/depois.
 Exemplo de estrutura:
 {
   "pergunta": "texto da pergunta, com foco no princípio bíblico",
-  "referencia_intercessor": "qual intercessor (se houver) confirma esse princípio em seu testemunho de vida",
   "opcoes": ["A) opção 1", "B) opção 2", "C) opção 3", "D) opção 4"],
   "correta": 0,
   "explicacao": "explicação em 2-4 frases, ancorada no texto bíblico",
@@ -1183,14 +1169,6 @@ function setTheme(el, theme) {
   updateBadge();
 }
 
-function setMaster(el, master) {
-  const row = el.closest('.masters-grid');
-  row.querySelectorAll('.master-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  activeMaster = master;
-  updateBadge();
-}
-
 function updateBadge() {
   const themeLabels = {
     "Todos": "Todos os temas", "Fundamentos": "Fundamentos", "Autoridade": "Autoridade Espiritual",
@@ -1203,26 +1181,31 @@ function updateBadge() {
   };
   const icon = themeIcons[activeTheme] || "i-book";
   let html = `<svg class="icon"><use href="#${icon}"/></svg> Tema: ${themeLabels[activeTheme] || activeTheme}`;
-  if (activeMaster !== 'Todos') html += ` · <svg class="icon"><use href="#i-star"/></svg> ${activeMaster}`;
   document.getElementById('activeMasterBadge').innerHTML = html;
 }
 
 function getSystemPrompt() {
   const themeContext = themeKnowledge[activeTheme] || themeKnowledge["Todos"];
-  const testemunho = masterKnowledge[activeMaster] || "";
+  const testemunhosDisponiveis = Object.entries(masterKnowledge)
+    .filter(([nome]) => nome !== 'Todos')
+    .map(([, texto]) => `- ${texto}`)
+    .join('\n');
+
   return `Você é um mestre de intercessão cristã, servindo como voz pastoral para um(a) intercessor(a) que busca crescer na Palavra e na oração. Trate quem está diante de você com o respeito devido a quem já foi chamado(a) para essa obra — não como alguém que está apenas começando, mas como um(a) intercessor(a) em formação contínua diante de Deus. Prioridade clara: A BÍBLIA É O FUNDAMENTO, SEMPRE.
 
 CONTEXTO DO TEMA BÍBLICO SELECIONADO:
 ${themeContext}
 
-${testemunho ? `TESTEMUNHO A CITAR COMO CONFIRMAÇÃO (não como fonte de autoridade):\n${testemunho}` : ''}
+TESTEMUNHOS DISPONÍVEIS (uso reservado, não obrigatório):
+${testemunhosDisponiveis}
 
 REGRAS OBRIGATÓRIAS DE ESTRUTURA:
 1. Comece SEMPRE pelo texto bíblico e pelo princípio das Escrituras. A Palavra de Deus é a única autoridade normativa.
 2. SEMPRE cite versículos bíblicos usando a versão NAA (Nova Almeida Atualizada), com referência (livro, capítulo e versículo).
-3. Só depois de estabelecer o fundamento bíblico, se fizer sentido, mencione que o ministério de algum intercessor é um TESTEMUNHO de que esse princípio funciona na prática — nunca apresente o intercessor como fonte da verdade, apenas como exemplo de vida transformada pela obediência à Palavra.
-4. Responda sempre em português brasileiro.
-5. Mantenha respostas práticas e inspiradoras, entre 200-400 palavras.`;
+3. NÃO cite nomes de intercessores por padrão. Só mencione um dos testemunhos acima quando ele realmente validar, de forma concreta e específica, a eficácia do princípio bíblico que você acabou de ensinar — e no máximo um por resposta. Na maioria das respostas, nenhum nome precisa aparecer.
+4. Quando citar um testemunho, ele nunca é a fonte da verdade — é apenas exemplo de vida transformada pela obediência à Palavra.
+5. Responda sempre em português brasileiro.
+6. Mantenha respostas práticas e inspiradoras, entre 200-400 palavras.`;
 }
 
 function switchTab(tab) {
@@ -1384,6 +1367,7 @@ async function generateQuiz() {
       let raw = data.candidates[0].content.parts[0].text;
       raw = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
       currentQuiz = JSON.parse(raw);
+      currentQuiz = shuffleQuizOptions(currentQuiz);
       renderQuiz(currentQuiz);
     } else {
       area.innerHTML = `<div class="loading-text">A pergunta foi bloqueada. Tente outro tema.</div>`;
@@ -1394,10 +1378,27 @@ async function generateQuiz() {
   btn.disabled = false;
 }
 
+function shuffleQuizOptions(quiz) {
+  // Tira o "A) " / "B) " original, porque a ordem vai mudar
+  const textosLimpos = quiz.opcoes.map(op => op.replace(/^[A-D]\)\s*/, ''));
+  const correctText = textosLimpos[quiz.correta];
+
+  // Embaralha (Fisher-Yates)
+  for (let i = textosLimpos.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [textosLimpos[i], textosLimpos[j]] = [textosLimpos[j], textosLimpos[i]];
+  }
+
+  const letras = ['A', 'B', 'C', 'D'];
+  quiz.opcoes = textosLimpos.map((texto, i) => `${letras[i]}) ${texto}`);
+  quiz.correta = textosLimpos.indexOf(correctText);
+  return quiz;
+}
+
 function renderQuiz(quiz) {
   const area = document.getElementById('quizArea');
   let html = `<div class="quiz-box">
-    <div class="quiz-ref">Tema · ${escapeHtml(quiz.referencia_intercessor || 'Intercessão')}</div>
+    <div class="quiz-ref">Tema · ${escapeHtml(selectedTopic)}</div>
     <div class="quiz-question">${escapeHtml(quiz.pergunta)}</div>
     <div class="quiz-options">`;
   quiz.opcoes.forEach((op, i) => {
