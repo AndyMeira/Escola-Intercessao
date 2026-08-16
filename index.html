@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agente de Intercessão (Gemini)</title>
+<title>Escola de Intercessão</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -674,6 +674,9 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#3d2b1f">
 <link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Intercessão">
 </head>
 <body>
 
@@ -700,7 +703,7 @@
 
   <header>
     <h1>Escola de <span>Intercessão</span></h1>
-    <p>Baseado nos ensinamentos da Bíblia e dos grandes intercessores (Powered by Gemini)</p>
+    <p>Baseado nos ensinamentos da Bíblia e dos grandes intercessores</p>
   </header>
 
   <div class="masters-section">
@@ -743,7 +746,7 @@
       </div>
       <div class="messages" id="messages">
         <div class="msg agent">
-          <div class="msg-label">🕯️ Escola de Intercessão (Gemini)</div>
+          <div class="msg-label">🕯️ Escola de Intercessão</div>
           <div class="msg-bubble">
             Bem-vindo(a), servo(a) do Senhor! 🙏<br><br>
             Esta escola é fundamentada, antes de tudo, na <strong>Palavra de Deus</strong>. Cada resposta parte diretamente das Escrituras, na <strong>versão NAA</strong> (Nova Almeida Atualizada).<br><br>
@@ -1110,7 +1113,7 @@ function updateBadge() {
 function getSystemPrompt() {
   const themeContext = themeKnowledge[activeTheme] || themeKnowledge["Todos"];
   const testemunho = masterKnowledge[activeMaster] || "";
-  return `Você é um mestre de intercessão cristã instruindo um aprendiz, com uma prioridade clara: A BÍBLIA É O FUNDAMENTO, SEMPRE.
+  return `Você é um mestre de intercessão cristã, servindo como voz pastoral para um(a) intercessor(a) que busca crescer na Palavra e na oração. Trate quem está diante de você com o respeito devido a quem já foi chamado(a) para essa obra — não como alguém que está apenas começando, mas como um(a) intercessor(a) em formação contínua diante de Deus. Prioridade clara: A BÍBLIA É O FUNDAMENTO, SEMPRE.
 
 CONTEXTO DO TEMA BÍBLICO SELECIONADO:
 ${themeContext}
@@ -1168,7 +1171,7 @@ function addMessage(content, role) {
   div.className = 'msg ' + (role === 'agent' ? 'agent' : 'user');
   const label = document.createElement('div');
   label.className = 'msg-label';
-  label.textContent = role === 'agent' ? '🕯️ Escola de Intercessão (Gemini)' : '✦ Você';
+  label.textContent = role === 'agent' ? '🕯️ Escola de Intercessão' : '✦ Você';
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   bubble.innerHTML = role === 'agent' ? parseMarkdown(content) : escapeHtml(content).replace(/\n/g, '<br>');
@@ -1234,7 +1237,7 @@ async function sendMessage() {
     removeTyping();
     
     if (data.error) {
-      addMessage(`Erro na API do Gemini: ${data.error.message}`, 'agent');
+      addMessage(`Erro ao buscar resposta: ${data.error.message || ''}`, 'agent');
     } else if (data.candidates && data.candidates[0].content) {
       const reply = data.candidates[0].content.parts[0].text;
       addMessage(reply, 'agent');
