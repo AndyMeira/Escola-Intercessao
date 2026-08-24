@@ -800,14 +800,8 @@
 
   <div class="masters-section">
     <div class="masters-label">Tema bíblico:</div>
-    <div class="masters-grid">
-      <button class="master-chip active" onclick="setTheme(this, 'Todos')" data-theme="Todos"><svg class="icon"><use href="#i-book"/></svg> Todos os temas</button>
-      <button class="master-chip" onclick="setTheme(this, 'Fundamentos')" data-theme="Fundamentos"><svg class="icon"><use href="#i-scroll"/></svg> Fundamentos da Intercessão</button>
-      <button class="master-chip" onclick="setTheme(this, 'Autoridade')" data-theme="Autoridade"><svg class="icon"><use href="#i-swords"/></svg> Autoridade Espiritual</button>
-      <button class="master-chip" onclick="setTheme(this, 'Quebrantamento')" data-theme="Quebrantamento"><svg class="icon"><use href="#i-pray"/></svg> Quebrantamento e Consagração</button>
-      <button class="master-chip" onclick="setTheme(this, 'Jejum')" data-theme="Jejum"><svg class="icon"><use href="#i-flame"/></svg> Jejum e Oração</button>
-      <button class="master-chip" onclick="setTheme(this, 'Nacoes')" data-theme="Nacoes"><svg class="icon"><use href="#i-globe"/></svg> Intercessão por Nações</button>
-      <button class="master-chip" onclick="setTheme(this, 'Impartição')" data-theme="Impartição"><svg class="icon"><use href="#i-spark"/></svg> Impartição e Avivamento</button>
+    <div class="masters-grid" id="themeChips">
+      <!-- Gerado automaticamente por renderThemeChips(), a partir do objeto THEMES -->
     </div>
   </div>
 
@@ -860,46 +854,7 @@
       <div>
         <p style="color:var(--muted);font-size:13px;margin-bottom:14px;">Escolha um tema e teste seus conhecimentos:</p>
         <div class="topic-grid" id="topicGrid">
-          <div class="topic-card selected" data-topic="Fundamentos bíblicos da intercessão" onclick="selectTopic(this)">
-            <div class="t-icon"><svg class="icon"><use href="#i-scroll"/></svg></div>
-            <div class="t-name">Fundamentos Bíblicos</div>
-            <div class="t-sub">Base nas Escrituras</div>
-          </div>
-          <div class="topic-card" data-topic="Intercessão militante — tomar as portas do inimigo em oração" onclick="selectTopic(this)">
-            <div class="t-icon"><svg class="icon"><use href="#i-swords"/></svg></div>
-            <div class="t-name">Intercessão Militante</div>
-            <div class="t-sub">Autoridade em oração</div>
-          </div>
-          <div class="topic-card" data-topic="Batalha espiritual e intercessão estratégica" onclick="selectTopic(this)">
-            <div class="t-icon"><svg class="icon"><use href="#i-dove"/></svg></div>
-            <div class="t-name">Batalha Espiritual</div>
-            <div class="t-sub">Discernimento e guerra espiritual</div>
-          </div>
-          <div class="topic-card" data-topic="Intercessão em chamas e autoridade espiritual" onclick="selectTopic(this)">
-            <div class="t-icon"><svg class="icon"><use href="#i-fire"/></svg></div>
-            <div class="t-name">Intercessão em Chamas</div>
-            <div class="t-sub">Fervor e autoridade espiritual</div>
-          </div>
-          <div class="topic-card" data-topic="Conquista de cidades e intercessão por nações" onclick="selectTopic(this)">
-            <div class="t-icon"><svg class="icon"><use href="#i-globe"/></svg></div>
-            <div class="t-name">Conquistar Nações</div>
-            <div class="t-sub">Intercessão por cidades e povos</div>
-          </div>
-          <div class="topic-card" data-topic="O intercessor quebrantado, liberto e a sala do trono" onclick="selectTopic(this)">
-            <div class="t-icon"><svg class="icon"><use href="#i-pray"/></svg></div>
-            <div class="t-name">Sala do Trono</div>
-            <div class="t-sub">Quebrantamento e consagração</div>
-          </div>
-          <div class="topic-card" data-topic="Impartição do Espírito Santo e avivamento ligado à intercessão" onclick="selectTopic(this)">
-            <div class="t-icon"><svg class="icon"><use href="#i-spark"/></svg></div>
-            <div class="t-name">Impartição & Avivamento</div>
-            <div class="t-sub">O poder do Espírito Santo</div>
-          </div>
-          <div class="topic-card" data-topic="Intercessores bíblicos: Moisés, Daniel, Paulo, Ester e seus métodos" onclick="selectTopic(this)">
-            <div class="t-icon"><svg class="icon"><use href="#i-book"/></svg></div>
-            <div class="t-name">Intercessores Bíblicos</div>
-            <div class="t-sub">Moisés, Daniel, Paulo, Ester</div>
-          </div>
+          <!-- Gerado automaticamente por renderTopicGrid(), a partir de THEMES + EXTRA_QUIZ_TOPICS -->
         </div>
         <button class="generate-btn" id="generateBtn" onclick="generateQuiz()"><svg class="icon"><use href="#i-star"/></svg> Gerar Pergunta</button>
       </div>
@@ -982,18 +937,110 @@ let selectedTopic = "Fundamentos bíblicos da intercessão";
 let quizAnswered = false;
 let currentQuiz = null;
 
-const themeKnowledge = {
-  "Todos": `Cubra o espectro completo dos temas bíblicos de intercessão: fundamentos, autoridade espiritual, quebrantamento, jejum, intercessão por nações, e impartição/avivamento.`,
-  "Fundamentos": `TEMA: Fundamentos bíblicos da intercessão. Base nas Escrituras: Êxodo 17:8-13 (Moisés, Arão e Hur), Ezequiel 22:30 (Deus busca quem se ponha na brecha), 1 Timóteo 2:1-4 (súplicas, orações, intercessões por todos os homens), Gênesis 18:22-33 (Abraão intercedendo por Sodoma).`,
-  "Autoridade": `TEMA: Autoridade espiritual e guerra espiritual. Base nas Escrituras: Efésios 6:10-18 (armadura de Deus), 2 Coríntios 10:3-5 (armas não carnais), Lucas 10:19 (autoridade sobre o poder do inimigo), Mateus 16:19 (as chaves do Reino, ligar e desligar).`,
-  "Quebrantamento": `TEMA: Quebrantamento e consagração do intercessor. Base nas Escrituras: Salmos 51:17 (coração quebrantado e contrito), Isaías 6:1-8 (Isaías diante do trono, "ai de mim"), Romanos 12:1 (sacrifício vivo).`,
-  "Jejum": `TEMA: Jejum e oração. Base nas Escrituras: Isaías 58:6-9 (o jejum que Deus escolheu), Mateus 6:16-18 (como jejuar), Ester 4:16 (jejum antes de intervir pelo povo), Daniel 9:3 (Daniel busca a Deus em jejum e oração).`,
-  "Nacoes": `TEMA: Intercessão por nações e cidades. Base nas Escrituras: Jeremias 29:7 (buscai a paz da cidade), Neemias 1:4-11 (Neemias intercede pela cidade), 2 Crônicas 7:14 (se o meu povo se humilhar).`,
-  "Impartição": `TEMA: Impartição do Espírito Santo e avivamento. Base nas Escrituras: Atos 2:1-4 (Pentecostes), 2 Reis 2:9-15 (Eliseu recebe porção dobrada do espírito de Elias), 2 Timóteo 1:6 (aviva o dom que está em ti).`
+// ===== FONTE ÚNICA DE VERDADE DOS TEMAS =====
+// Cada tema é definido AQUI UMA VEZ SÓ. Os chips do chat e os cards do quiz
+// são gerados automaticamente a partir deste objeto (ver renderThemeChips() e renderTopicGrid()).
+// Pra adicionar/editar um tema no futuro, só mexe aqui.
+const THEMES = {
+  "Todos": {
+    label: "Todos os temas",
+    icon: "i-book",
+    knowledge: `Cubra o espectro completo dos temas bíblicos de intercessão: fundamentos, autoridade espiritual, quebrantamento, jejum, intercessão por nações, e impartição/avivamento.`
+  },
+  "Fundamentos": {
+    label: "Fundamentos da Intercessão",
+    icon: "i-scroll",
+    knowledge: `TEMA: Fundamentos bíblicos da intercessão. Base nas Escrituras: Êxodo 17:8-13 (Moisés, Arão e Hur), Ezequiel 22:30 (Deus busca quem se ponha na brecha), 1 Timóteo 2:1-4 (súplicas, orações, intercessões por todos os homens), Gênesis 18:22-33 (Abraão intercedendo por Sodoma).`,
+    quizTopic: "Fundamentos bíblicos da intercessão",
+    topicName: "Fundamentos Bíblicos",
+    topicSub: "Base nas Escrituras"
+  },
+  "Autoridade": {
+    label: "Autoridade Espiritual",
+    icon: "i-swords",
+    knowledge: `TEMA: Autoridade espiritual e guerra espiritual. Base nas Escrituras: Efésios 6:10-18 (armadura de Deus), 2 Coríntios 10:3-5 (armas não carnais), Lucas 10:19 (autoridade sobre o poder do inimigo), Mateus 16:19 (as chaves do Reino, ligar e desligar).`,
+    quizTopic: "Intercessão militante — tomar as portas do inimigo em oração",
+    topicName: "Intercessão Militante",
+    topicSub: "Autoridade em oração"
+  },
+  "Quebrantamento": {
+    label: "Quebrantamento e Consagração",
+    icon: "i-pray",
+    knowledge: `TEMA: Quebrantamento e consagração do intercessor. Base nas Escrituras: Salmos 51:17 (coração quebrantado e contrito), Isaías 6:1-8 (Isaías diante do trono, "ai de mim"), Romanos 12:1 (sacrifício vivo).`,
+    quizTopic: "O intercessor quebrantado, liberto e a sala do trono",
+    topicName: "Sala do Trono",
+    topicSub: "Quebrantamento e consagração"
+  },
+  "Jejum": {
+    label: "Jejum e Oração",
+    icon: "i-flame",
+    knowledge: `TEMA: Jejum e oração. Base nas Escrituras: Isaías 58:6-9 (o jejum que Deus escolheu), Mateus 6:16-18 (como jejuar), Ester 4:16 (jejum antes de intervir pelo povo), Daniel 9:3 (Daniel busca a Deus em jejum e oração).`,
+    quizTopic: "Intercessão em chamas e autoridade espiritual",
+    topicName: "Intercessão em Chamas",
+    topicSub: "Fervor e autoridade espiritual"
+  },
+  "Nacoes": {
+    label: "Intercessão por Nações",
+    icon: "i-globe",
+    knowledge: `TEMA: Intercessão por nações e cidades. Base nas Escrituras: Jeremias 29:7 (buscai a paz da cidade), Neemias 1:4-11 (Neemias intercede pela cidade), 2 Crônicas 7:14 (se o meu povo se humilhar).`,
+    quizTopic: "Conquista de cidades e intercessão por nações",
+    topicName: "Conquistar Nações",
+    topicSub: "Intercessão por cidades e povos"
+  },
+  "Impartição": {
+    label: "Impartição e Avivamento",
+    icon: "i-spark",
+    knowledge: `TEMA: Impartição do Espírito Santo e avivamento. Base nas Escrituras: Atos 2:1-4 (Pentecostes), 2 Reis 2:9-15 (Eliseu recebe porção dobrada do espírito de Elias), 2 Timóteo 1:6 (aviva o dom que está em ti).`,
+    quizTopic: "Impartição do Espírito Santo e avivamento ligado à intercessão",
+    topicName: "Impartição & Avivamento",
+    topicSub: "O poder do Espírito Santo"
+  }
 };
 
+// Cards de quiz extras que não são "temas filtráveis" no chat, só existem no quiz
+const EXTRA_QUIZ_TOPICS = [
+  {
+    quizTopic: "Batalha espiritual e intercessão estratégica",
+    icon: "i-dove",
+    topicName: "Batalha Espiritual",
+    topicSub: "Discernimento e guerra espiritual"
+  },
+  {
+    quizTopic: "Intercessores bíblicos: Moisés, Daniel, Paulo, Ester e seus métodos",
+    icon: "i-book",
+    topicName: "Intercessores Bíblicos",
+    topicSub: "Moisés, Daniel, Paulo, Ester"
+  }
+];
+
+// Gera os chips de tema do chat automaticamente a partir de THEMES
+function renderThemeChips() {
+  const container = document.getElementById('themeChips');
+  container.innerHTML = Object.entries(THEMES).map(([key, t]) => {
+    const activeClass = key === 'Todos' ? ' active' : '';
+    return `<button class="master-chip${activeClass}" onclick="setTheme(this, '${key}')" data-theme="${key}"><svg class="icon"><use href="#${t.icon}"/></svg> ${t.label}</button>`;
+  }).join('');
+}
+
+// Gera os cards de tópico do quiz automaticamente a partir de THEMES + EXTRA_QUIZ_TOPICS
+function renderTopicGrid() {
+  const grid = document.getElementById('topicGrid');
+  const temasComQuiz = Object.values(THEMES).filter(t => t.quizTopic);
+  const todosTopicos = [...temasComQuiz, ...EXTRA_QUIZ_TOPICS];
+
+  grid.innerHTML = todosTopicos.map((t, i) => {
+    const selectedClass = i === 0 ? ' selected' : '';
+    return `<div class="topic-card${selectedClass}" data-topic="${t.quizTopic}" onclick="selectTopic(this)">
+      <div class="t-icon"><svg class="icon"><use href="#${t.icon}"/></svg></div>
+      <div class="t-name">${t.topicName}</div>
+      <div class="t-sub">${t.topicSub}</div>
+    </div>`;
+  }).join('');
+
+  if (todosTopicos.length > 0) selectedTopic = todosTopicos[0].quizTopic;
+}
+
 const masterKnowledge = {
-  "Todos": ``,
   "Randy Clark": `Randy Clark (EUA), fundador do Global Awakening, é citado como testemunho de que a impartição do Espírito Santo, buscada em oração, produz avivamento — confirmando na prática o princípio de 2 Timóteo 1:6 e Atos 2.`,
   "Cindy Jacobs": `Cindy Jacobs (EUA), da Generals International, é citada como testemunho de que a intercessão perseverante e a autoridade em oração (Lucas 10:19, Mateus 16:19) trazem transformação sobre cidades e nações.`,
   "Neuza Itioka": `Neuza Itioka (Brasil), doutora em Missiologia, é citada como testemunho de que discernimento espiritual fundamentado nas Escrituras (Efésios 6) sustenta a batalha espiritual de forma equilibrada e bíblica.`,
@@ -1018,6 +1065,8 @@ Exemplo de estrutura:
 }`;
 
 window.addEventListener('DOMContentLoaded', () => {
+  renderThemeChips();
+  renderTopicGrid();
   const textarea = document.getElementById('userInput');
   textarea.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -1170,22 +1219,13 @@ function setTheme(el, theme) {
 }
 
 function updateBadge() {
-  const themeLabels = {
-    "Todos": "Todos os temas", "Fundamentos": "Fundamentos", "Autoridade": "Autoridade Espiritual",
-    "Quebrantamento": "Quebrantamento", "Jejum": "Jejum e Oração", "Nacoes": "Intercessão por Nações",
-    "Impartição": "Impartição e Avivamento"
-  };
-  const themeIcons = {
-    "Todos": "i-book", "Fundamentos": "i-scroll", "Autoridade": "i-swords",
-    "Quebrantamento": "i-pray", "Jejum": "i-flame", "Nacoes": "i-globe", "Impartição": "i-spark"
-  };
-  const icon = themeIcons[activeTheme] || "i-book";
-  let html = `<svg class="icon"><use href="#${icon}"/></svg> Tema: ${themeLabels[activeTheme] || activeTheme}`;
+  const theme = THEMES[activeTheme] || THEMES["Todos"];
+  const html = `<svg class="icon"><use href="#${theme.icon}"/></svg> Tema: ${theme.label}`;
   document.getElementById('activeMasterBadge').innerHTML = html;
 }
 
 function getSystemPrompt() {
-  const themeContext = themeKnowledge[activeTheme] || themeKnowledge["Todos"];
+  const themeContext = (THEMES[activeTheme] || THEMES["Todos"]).knowledge;
   const testemunhosDisponiveis = Object.entries(masterKnowledge)
     .filter(([nome]) => nome !== 'Todos')
     .map(([, texto]) => `- ${texto}`)
