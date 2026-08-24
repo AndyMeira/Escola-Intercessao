@@ -1,4 +1,4 @@
-const CACHE_NAME = 'escola-intercessao-v1';
+const CACHE_NAME = 'escola-intercessao-v2';
 const APP_SHELL = [
   '/Escola-Intercessao/',
   '/Escola-Intercessao/index.html',
@@ -15,7 +15,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Ao ativar, apaga versões antigas de cache (evita acumular lixo)
+// Ao ativar, apaga versões antigas de cache (evita acumular lixo E evita ficar preso numa versão velha)
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((names) =>
@@ -32,7 +32,24 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
-  );
+  const ehPagina = event.request.mode === 'navigate' || url.pathname.endsWith('.html');
+
+  if (ehPagina) {
+    // Rede primeiro: sempre tenta buscar a versão mais nova do site.
+    // Só usa a cópia salva se estiver realmente sem internet.
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const copia = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copia));
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+  } else {
+    // Ícones e manifest: cache primeiro (mudam raramente, carrega mais rápido)
+    event.respondWith(
+      caches.match(event.request).then((cached) => cached || fetch(event.request))
+    );
+  }
 });
