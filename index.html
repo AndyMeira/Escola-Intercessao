@@ -1359,7 +1359,8 @@ async function sendMessage() {
     removeTyping();
     
     if (data.error) {
-      addMessage(`Erro ao buscar resposta: ${data.error.message || ''}`, 'agent');
+      const errMsg = typeof data.error === 'string' ? data.error : (data.error.message || 'Erro desconhecido.');
+      addMessage(`Erro ao buscar resposta: ${errMsg}`, 'agent');
     } else if (data.candidates && data.candidates[0].content) {
       const reply = data.candidates[0].content.parts[0].text;
       addMessage(reply, 'agent');
@@ -1402,7 +1403,8 @@ async function generateQuiz() {
 
     const data = await res.json();
     if (data.error) {
-      area.innerHTML = `<div class="loading-text">Erro: ${escapeHtml(data.error.message || '')}</div>`;
+      const errMsg = typeof data.error === 'string' ? data.error : (data.error.message || 'Erro desconhecido.');
+      area.innerHTML = `<div class="loading-text">Erro: ${escapeHtml(errMsg)}</div>`;
     } else if (data.candidates && data.candidates[0].content) {
       let raw = data.candidates[0].content.parts[0].text;
       raw = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
